@@ -13,7 +13,7 @@ const Info = () => {
         cardTitle="Opening hour"
       ></InfoCard>
       <InfoCard
-        bgClass="bg-accent"
+        bgClass="bg-gradient-to-r from-accent to-accent"
         img={marker}
         cardTitle="Our Location"
       ></InfoCard>

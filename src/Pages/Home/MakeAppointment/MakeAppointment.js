@@ -6,15 +6,15 @@ import appointment from "../../../assets/images/appointment.png";
 const MakeAppointment = () => {
   return (
     <section
-      className="flex items-center my-24"
+      className="flex items-center my-24 flex-col lg:flex-row"
       style={{
         background: `url(${appointment})`,
       }}
     >
       <div className="flex-1">
-        <img className="mt-[-140px]" src={doctor} alt="" />
+        <img className=" mt-[-140px]" src={doctor} alt="" />
       </div>
-      <div className="flex-1">
+      <div className="flex-1 px-6">
         <h3 className="text-primary font-bold text-xl uppercase py-6">
           Appointment
         </h3>

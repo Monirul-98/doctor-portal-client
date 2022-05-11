@@ -4,9 +4,12 @@ import PrimaryButton from "../../Shared/PrimaryButton/PrimaryButton";
 
 const Connect = () => {
   return (
-    <section style={{ background: `url(${appointment})` }} className="p-7">
+    <section
+      style={{ background: `url(${appointment})` }}
+      className="p-7 mb-14"
+    >
       <h3 className="text-xl text-primary text-center">Contact us</h3>
-      <h2 className="text-4xl text-white text-center mb-9~">
+      <h2 className="text-4xl text-white text-center mb-9">
         Stay connected with us
       </h2>
       <div className="grid grid-cols-1 justify-items-center gap-5">
