@@ -1,70 +1,56 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import {
-  useSendPasswordResetEmail,
-  useSignInWithEmailAndPassword,
+  useCreateUserWithEmailAndPassword,
   useSignInWithGoogle,
+  useUpdateProfile,
 } from "react-firebase-hooks/auth";
 import { useForm } from "react-hook-form";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import auth from "../../../firebase.init";
 import Loading from "../../Shared/Loading";
 
-const Login = () => {
+const SignUp = () => {
   const [signInWithGoogle, gUser, gLoading, gError] = useSignInWithGoogle(auth);
-  const [signInWithEmailAndPassword, user, loading, error] =
-    useSignInWithEmailAndPassword(auth);
+  const [createUserWithEmailAndPassword, user, loading, error] =
+    useCreateUserWithEmailAndPassword(auth);
+  const [updateProfile, updating, updateError] = useUpdateProfile(auth);
   const {
     register,
     formState: { errors },
     handleSubmit,
   } = useForm();
-  const [sendPasswordResetEmail, sending, passError] =
-    useSendPasswordResetEmail(auth);
+  const navigate = useNavigate();
+
   let signInError;
-  const [email, setEmail] = useState();
 
-  let navigate = useNavigate();
-  let location = useLocation();
-
-  let from = location.state?.from?.pathname || "/";
-
-  const onSubmit = (data) => {
-    signInWithEmailAndPassword(data.email, data.password);
-  };
-
-  const handleResetPass = async (email) => {
-    console.log(email);
-    if (email) {
-      await sendPasswordResetEmail(email);
-      alert("Password reset email sent!");
-    } else {
-      alert("Please Enter Your Mail");
-    }
-  };
-
-  useEffect(() => {
-    if (user || gUser) {
-      navigate(from, { replace: true });
-    }
-  }, [user, gUser, navigate, from]);
-
-  if (loading || gLoading || sending) {
+  if (loading || gLoading || updating) {
     return <Loading></Loading>;
   }
 
-  if (error || gError || passError) {
+  if (error || gError || updateError) {
     signInError = (
       <p className="text-red-700 text-xl">
-        {error?.message || gError?.message}
+        {error?.message || gError?.message || updateError?.message}
       </p>
     );
   }
+
+  if (user || gUser) {
+    console.log(gUser);
+  }
+
+  const onSubmit = async (data) => {
+    await createUserWithEmailAndPassword(data.email, data.password);
+    await updateProfile({ displayName: data.name });
+    console.log("Profile updated");
+    navigate("/appointment");
+  };
 
   return (
     <div className="hero min-h-screen ">
       <div className="hero-content flex-col lg:flex-row-reverse">
         <div className="text-center lg:text-left">
-          <h1 className="text-5xl font-bold">Login now!</h1>
+          <h1 className="text-5xl font-bold">Sign in now!!</h1>
           <p className="py-6">
             Find Your Perfect Smile!Get an Expert Medical Opinion from one of
             our world-renowned specialists so you can have the answers and
@@ -76,12 +62,34 @@ const Login = () => {
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="form-control">
                 <label className="label">
+                  <span className="label-text">Name</span>
+                </label>
+                <input
+                  type="text"
+                  placeholder="Your name"
+                  className="input input-bordered"
+                  {...register("name", {
+                    required: {
+                      value: true,
+                      message: "Name is required",
+                    },
+                  })}
+                />
+                <label className="label">
+                  {errors.name?.type === "required" && (
+                    <span className="label-text-alt text-red-700">
+                      {errors.name.message}
+                    </span>
+                  )}
+                </label>
+              </div>
+              <div className="form-control">
+                <label className="label">
                   <span className="label-text">Email</span>
                 </label>
                 <input
                   type="text"
                   placeholder="email"
-                  onFocus={(e) => setEmail(e.target.value)}
                   className="input input-bordered"
                   {...register("email", {
                     required: {
@@ -138,31 +146,22 @@ const Login = () => {
                     </span>
                   )}
                 </label>
-
-                <label className="label">
-                  <button
-                    onClick={() => handleResetPass(email)}
-                    className="btn btn-link"
-                  >
-                    Forgot password?
-                  </button>
-                </label>
               </div>
               {signInError}
               <div className="form-control mt-6">
                 <input
                   type="submit"
-                  value="Login"
+                  value="Sign Up"
                   className="btn btn-primary text-white"
                 />
               </div>
             </form>
             <p>
               <small>
-                New to Doctors's Portal?
-                <Link className="text-primary" to="/signup">
+                Already have an account?
+                <Link className="text-primary" to="/login">
                   {" "}
-                  Create new account
+                  Please Log in.
                 </Link>{" "}
               </small>
             </p>
@@ -182,4 +181,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default SignUp;
