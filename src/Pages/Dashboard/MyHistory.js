@@ -1,13 +1,13 @@
 import React from "react";
 
-const MyReview = () => {
+const MyHistory = () => {
   return (
     <div>
       <h2 className="text-center text-xl text-accent font-bold mb-7 ">
-        My Review
+        My Treatment History
       </h2>
     </div>
   );
 };
 
-export default MyReview;
+export default MyHistory;
